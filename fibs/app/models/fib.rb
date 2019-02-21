@@ -24,7 +24,7 @@ class Fib < ApplicationRecord
 
   class << self
     def find_generated_fibs(size)
-      Fib.find_by("size >= ?", size)&.generated_fibs&.slice(0, size)
+      find_by("size >= ?", size)&.generated_fibs&.slice(0, size)
     end
   end
 

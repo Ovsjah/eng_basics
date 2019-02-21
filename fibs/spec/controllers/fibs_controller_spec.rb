@@ -1,12 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe FibsController, type: :controller do
-  subject { JSON.parse(response.body) }
-
-  let(:valid_attributes) { {size: 10} }
+  let!(:fib) { create(:fib) }
+  let(:valid_attributes) { attributes_for(:fib) }
   let(:invalid_attributes) { {size: ' '} }
 
-  before(:each) { @fib = Fib.create! valid_attributes }
+  subject { JSON.parse(response.body) }
 
   describe "GET #index" do
     it "responds with JSON body containing fibs" do
@@ -17,8 +16,8 @@ RSpec.describe FibsController, type: :controller do
 
   describe "GET #show" do
     it "responds with JSON body containing Fib attributes" do
-      get :show, params: {id: @fib.to_param}
-      expect(subject['genrated_fibs']).to match(@fib.attributes[:generated_fibs])
+      get :show, params: {id: fib.to_param}
+      expect(subject['genrated_fibs']).to match(fib.attributes[:generated_fibs])
     end
   end
 
@@ -32,7 +31,7 @@ RSpec.describe FibsController, type: :controller do
 
       it "renders a JSON response with the new fib" do
         post :create, params: {fib: valid_attributes}
-        expect(subject['size']).to eq(10)
+        expect(subject['size']).to eq(valid_attributes[:size])
       end
     end
 
@@ -49,14 +48,14 @@ RSpec.describe FibsController, type: :controller do
       let(:new_attributes) { {size: 2} }
 
       it "updates the requested fib" do
-        patch :update, params: {id: @fib.to_param, fib: new_attributes}
-        expect(subject['generated_fibs'].size).to eq(@fib.reload.size)
+        patch :update, params: {id: fib.to_param, fib: new_attributes}
+        expect(subject['generated_fibs'].size).to eq(fib.reload.size)
       end
     end
 
     context "with invalid params" do
       it "renders a JSON response with errors for the fib" do
-        patch :update, params: {id: @fib.to_param, fib: invalid_attributes}
+        patch :update, params: {id: fib.to_param, fib: invalid_attributes}
         expect(subject['size']).to eq(["can't be blank", "is not a number"])
       end
     end
@@ -65,7 +64,7 @@ RSpec.describe FibsController, type: :controller do
   describe "DELETE #destroy" do
     it "destroys the requested fib" do
       expect {
-        delete :destroy, params: {id: @fib.to_param}
+        delete :destroy, params: {id: fib.to_param}
       }.to change(Fib, :count).by(-1)
     end
   end

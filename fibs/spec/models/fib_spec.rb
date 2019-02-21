@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Fib, type: :model do
-  let(:fib) { Fib.create(size: 10) }
-  let(:unsaved_fib) { Fib.new(size: 4) }
+  let!(:fib) { create(:fib, size: 10) }
+  let(:unsaved_fib) { build(:fib, size: 4) }
   let(:expected_result) { [0, 1, 1, 2, 3, 5, 8, 13, 21, 34] }
   let(:expected_result_for_unsaved) { [0, 1, 1, 2] }
 
@@ -26,7 +26,6 @@ RSpec.describe Fib, type: :model do
   describe '#generate' do
     context "when sequence is present in database" do
       before(:each) do
-        Fib.create(size: 13)
         allow_any_instance_of(Fib).to receive(:generate_fibs) { raise Exception }
       end
 
@@ -43,14 +42,13 @@ RSpec.describe Fib, type: :model do
   describe '#generate_fibs' do
     it "sets the generated_fibs" do
       unsaved_fib.send(:generate_fibs, unsaved_fib.size)
-      expect(unsaved_fib.generated_fibs).to eq([0, 1, 1, 2])
+      expect(unsaved_fib.generated_fibs).to eq(expected_result_for_unsaved)
     end
   end
 
   describe '#already_generated' do
     context "when fibonacci sequence is present in database" do
       it "sets generated_fibs to one from the db" do
-        Fib.create(size: 5)
         unsaved_fib.send(:already_generated)
         expect(unsaved_fib.generated_fibs).to eq(expected_result_for_unsaved)
       end
@@ -107,19 +105,17 @@ RSpec.describe Fib, type: :model do
 
   describe '.find_generated_fibs' do
     context "when fibonacci sequence is present in database" do
-      before(:each) { Fib.create(size: 6) }
-
       it "returns sequence if it's grater or equal to the given size" do
-        expect(described_class.find_generated_fibs(5)).to eq([0, 1, 1, 2, 3])
+        expect(described_class.find_generated_fibs(4)).to eq(expected_result_for_unsaved)
       end
 
       it "cuts sequence to the given size" do
-         expect(described_class.find_generated_fibs(5).size).to eq(5)
+         expect(described_class.find_generated_fibs(4).size).to eq(4)
       end
     end
 
     context "when absent" do
-      it { expect(described_class.find_generated_fibs(5)).to be_nil }
+      it { expect(described_class.find_generated_fibs(11)).to be_nil }
     end
   end
 end
