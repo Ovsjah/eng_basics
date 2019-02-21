@@ -48,13 +48,13 @@ describe Fibs do
   describe '#all_fibs?' do
     context 'when passed an array of numbers that are all members of the the fibonacci sequence' do
       it 'returns true' do
-        expect(subject.all_fibs?([ 0, 1, 1, 2, 3])).to eq(true)
+        expect(subject.all_fibs?([0, 1, 1, 2, 3])).to eq(true)
       end
     end
 
     context 'when passed an array of numbers that where at least one is not a member of the sequence' do
       it 'returns false' do
-        expect(subject.all_fibs?([ 0, 1, 1, 1, 3])).to eq(false)
+        expect(subject.all_fibs?([0, 1, 1, 1, 3])).to eq(false)
       end
     end
   end
@@ -74,7 +74,7 @@ describe Fibs do
 
     context 'when there are no stored numbers' do
       it 'returns 0' do
-        expect( subject.known_fibs_sum_of_squares ).to eq( 0 )
+        expect(subject.known_fibs_sum_of_squares).to eq( 0 )
       end
     end
   end
