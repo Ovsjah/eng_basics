@@ -50,7 +50,7 @@ RSpec.describe FibsController, type: :controller do
 
       it "updates the requested fib" do
         patch :update, params: {id: @fib.to_param, fib: new_attributes}
-        expect(subject['size']).to eq(@fib.reload.size)
+        expect(subject['generated_fibs'].size).to eq(@fib.reload.size)
       end
     end
 
